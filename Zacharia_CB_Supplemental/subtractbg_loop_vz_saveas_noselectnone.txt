@@ -1,0 +1,29 @@
+path    = getDirectory("Choose a Directory");
+list    = getFileList(path);
+length  = list.length;
+setOption("ExpandableArrays", true);
+firstImageSetArray = newArray;
+File.makeDirectory( "finalsubtracted");
+
+
+for (i=0; i<length; i++) {
+     n=i+1;
+     open(path+list[i]);
+     img = File.nameWithoutExtension();
+     selectWindow(img+".tif");
+     
+     run("ROI Manager...");
+     waitForUser("Draw ROI, then hit OK");
+
+"Subtract Measured Background 1" {
+      if (selectionType==-1)
+         exit("This macro requires an area selection");
+      for (j=1; j<nSlices+1; j++) {
+          //roiManager("select", j);
+          setSlice(j);
+          getStatistics(area, mean);
+          run("Subtract...", "value="+mean);
+         }
+{  saveAs ("Tiff" + "finalsubtracted");
+   run("Close All");
+ }

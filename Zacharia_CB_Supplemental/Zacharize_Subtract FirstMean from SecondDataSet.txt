@@ -1,0 +1,34 @@
+path    = getDirectory("Choose a Directory");
+list    = getFileList(path);
+length  = list.length;
+setOption("ExpandableArrays", true);
+firstImageSetArray = newArray;
+File.makeDirectory(path + "subtractedImages/");
+
+for (i=0; i<length; i++) {
+     n=i+1;
+     open(path+list[i]);
+     img = File.nameWithoutExtension();
+     selectWindow(img+".tif");
+     
+     run("ROI Manager...");
+     waitForUser("Draw ROI, then hit OK");
+     
+     if (selectionType==-1)
+          exit("This macro requires an area selection");
+      for (j=1; j<nSlices+1; j++) {
+          //roiManager("select", i);
+          setSlice(j);
+         // get mean of firstImageSet
+          if (i==0) {
+             getStatistics(area, mean);
+             firstImageSetArray[j]=mean;
+          }
+        // subtract from second image set
+          if (i==1) {
+              run("Subtract...", "value="+firstImageSetArray[j]);
+          }
+      }
+   saveAs ("Tiff", path + "subtractedImages/subtractedFinal");
+   run("Close All");
+ }
